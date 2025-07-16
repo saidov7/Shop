@@ -1,30 +1,46 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { useGlobal } from "./context/GlobalContext";
 import Navbar from "./components/Navbar";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import Home from "./pages/Home";
 import Cart from "./pages/Cart";
 import ProductDetails from "./pages/ProductDetails";
-import Login from "./pages/Login";
-import PrivateRoute from "./routes/PrivateRoute";
-import { useGlobal } from "./context/GlobalContext";
 
-export default function App() {
+function App() {
+  const { isAuthenticated } = useGlobal();
   const location = useLocation();
-  const hideNavbar = location.pathname === "/login";
-  const { toast } = useGlobal();
+  const hideNavbar = ["/login", "/signup"].includes(location.pathname);
 
   return (
     <>
       {!hideNavbar && <Navbar />}
 
-      {}
-      {toast && <div className="toast">{toast}</div>}
-
       <Routes>
+        <Route
+          path="/"
+          element={
+            isAuthenticated ? <Home /> : <Navigate to="/login" replace />
+          }
+        />
+        <Route
+          path="/product/:id"
+          element={
+            isAuthenticated ? <ProductDetails /> : <Navigate to="/login" replace />
+          }
+        />
+        <Route
+          path="/cart"
+          element={
+            isAuthenticated ? <Cart /> : <Navigate to="/login" replace />
+          }
+        />
         <Route path="/login" element={<Login />} />
-        <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
-        <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
-        <Route path="/product/:id" element={<PrivateRoute><ProductDetails /></PrivateRoute>} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
     </>
   );
 }
+
+export default App;

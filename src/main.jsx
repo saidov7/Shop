@@ -1,17 +1,18 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import App from "./App";
-import { GlobalProvider } from "./context/GlobalContext";
 import "./index.css";
 import "./styles/style.css";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import { GlobalProvider } from "./context/GlobalContext";
+import { BrowserRouter } from "react-router-dom";
+import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <GlobalProvider>
+    <GlobalProvider>
+      <BrowserRouter>
         <App />
-      </GlobalProvider>
-    </BrowserRouter>
+      </BrowserRouter>
+    </GlobalProvider>
   </React.StrictMode>
 );

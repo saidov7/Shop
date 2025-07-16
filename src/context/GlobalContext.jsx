@@ -1,45 +1,53 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 
 const GlobalContext = createContext();
-export const useGlobal = () => useContext(GlobalContext);
 
 export const GlobalProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem("user");
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
-  const [error, setError] = useState(null);
-  const [toast, setToast] = useState("");
+  const [favorites, setFavorites] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    localStorage.getItem("auth") === "true"
+  );
 
-  const showToast = (msg) => {
-    setToast(msg);
-    setTimeout(() => setToast(""), 2000);
-  };
-
-  const addToCart = (product) => {
-    setCart([...cart, product]);
-    showToast("Mahsulot savatga qo‘shildi");
-  };
-
-  const removeFromCart = (index) => {
-    setCart(cart.filter((_, i) => i !== index));
+  const signup = (username, password) => {
+    const existingUser = users.find((user) => user.username === username);
+    if (!existingUser) {
+      setUsers((prev) => [...prev, { username, password }]);
+      return true;
+    }
+    return false;
   };
 
   const login = (username, password) => {
-    if (username === "admin" && password === "123456") {
-      const newUser = { username };
-      setUser(newUser);
-      localStorage.setItem("user", JSON.stringify(newUser)); 
-      setError(null);
-    } else {
-      setError("Login yoki parol noto‘g‘ri!");
+    const user = users.find(
+      (u) => u.username === username && u.password === password
+    );
+    if (user) {
+      setIsAuthenticated(true);
+      localStorage.setItem("auth", "true");
+      return true;
     }
+    return false;
   };
 
   const logout = () => {
-    setUser(null);
-    localStorage.removeItem("user"); 
+    setIsAuthenticated(false);
+    localStorage.removeItem("auth");
+  };
+
+  const addToCart = (product) => {
+    setCart((prev) => [...prev, product]);
+  };
+
+  const removeFromCart = (id) => {
+    setCart((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const toggleFavorite = (id) => {
+    setFavorites((prev) =>
+      prev.includes(id) ? prev.filter((fid) => fid !== id) : [...prev, id]
+    );
   };
 
   return (
@@ -48,14 +56,18 @@ export const GlobalProvider = ({ children }) => {
         cart,
         addToCart,
         removeFromCart,
-        user,
+        favorites,
+        toggleFavorite,
+        isAuthenticated,
         login,
         logout,
-        error,
-        toast,
+        signup,
+        users,
       }}
     >
       {children}
     </GlobalContext.Provider>
   );
 };
+
+export const useGlobal = () => useContext(GlobalContext);

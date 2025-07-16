@@ -8,7 +8,6 @@ export default function Home() {
 
   return (
     <div className="container">
-      <h2>Barcha Mahsulotlar</h2>
       <div className="product-grid">
         {products.map((p) => (
           <div className="product-card" key={p.id}>
