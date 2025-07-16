@@ -9,16 +9,16 @@ function ProductCard({ product }) {
     <div className="product-card">
       <div className="product-heart" onClick={() => toggleFavorite(product.id)}>
         {isFavorited ? (
-          <FaHeart color="red" size={20} />
+          <FaHeart color="red" size={22} />
         ) : (
-          <FaRegHeart color="gray" size={20} />
+          <FaRegHeart color="gray" size={22} />
         )}
       </div>
 
-      <img src={product.image} alt={product.title} />
-      <h3>{product.title}</h3>
-      <p>${product.price}</p>
-      <button onClick={() => addToCart(product)}>Buy</button>
+      <img src={product.image} alt={product.title} className="product-img" />
+      <h3 className="product-title">{product.title}</h3>
+      <p className="product-price">${product.price}</p>
+      <button className="product-buy-btn" onClick={() => addToCart(product)}>Buy</button>
     </div>
   );
 }
