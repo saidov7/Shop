@@ -1,25 +1,29 @@
 import { useGlobal } from "../context/GlobalContext";
 
-export default function Cart() {
+function Cart() {
   const { cart, removeFromCart } = useGlobal();
 
   return (
-    <div className="container">
-      <h2>Savat ({cart.length})</h2>
+    <div className="cart-container">
+      <h2>Your Cart</h2>
       {cart.length === 0 ? (
-        <p>Savat bo‘sh</p>
+        <p>Your cart is empty.</p>
       ) : (
-        <div className="product-grid">
-          {cart.map((item, index) => (
-            <div className="product-card" key={index}>
-              <img src={item.image} alt={item.title} />
-              <h3>{item.title}</h3>
+        cart.map((item, index) => (
+          <div key={`${item.id}-${index}`} className="cart-item">
+            <img src={item.image} alt={item.title} className="cart-image" />
+            <div className="cart-details">
+              <h4>{item.title}</h4>
               <p>${item.price}</p>
-              <button onClick={() => removeFromCart(index)}>O‘chirish</button>
+              <button className="remove-btn" onClick={() => removeFromCart(item.id)}>
+                Remove
+              </button>
             </div>
-          ))}
-        </div>
+          </div>
+        ))
       )}
     </div>
   );
 }
+
+export default Cart;
